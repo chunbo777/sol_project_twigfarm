@@ -7,12 +7,12 @@ from options import args
 
 
 if args.language == 'ko':
-    # model_type = 'monologg/kobert'
-    model_type="beomi/kcbert-base"
+    model_type = 'monologg/kobert'
+    # model_type="beomi/kcbert-base"
 else:
     model_type = 'bert-base-cased'
-# BERT = BertModel.from_pretrained(model_type).to(args.device)
-BERT = AutoModelWithLMHead.from_pretrained("beomi/kcbert-base")
+BERT = BertModel.from_pretrained(model_type).to(args.device)
+# BERT = AutoModelWithLMHead.from_pretrained("beomi/kcbert-base")
 # if args.language == 'ko':
 #     model_type = "monologg/koelectra-base-v3-discriminator"
 # BERT = ElectraModel.from_pretrained(model_type).to(args.device)

@@ -278,8 +278,8 @@ class KoBertTokenizer(PreTrainedTokenizer):
 
 # override alias for each language
 if args.language == 'ko':
-    # bert_tokenizer = KoBertTokenizer.from_pretrained('monologg/kobert')
-    bert_tokenizer=AutoTokenizer.from_pretrained("beomi/kcbert-base")
+    bert_tokenizer = KoBertTokenizer.from_pretrained('monologg/kobert')
+    # bert_tokenizer=AutoTokenizer.from_pretrained("beomi/kcbert-base")
 # if args.language == "ko":
 #     bert_tokenizer=ElectraTokenizer.from_pretrained("monologg/koelectra-base-v3-discriminator")
 else:

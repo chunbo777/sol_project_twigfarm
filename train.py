@@ -10,8 +10,8 @@ import sys, os
 sys.path.insert(0, "/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/")
 from dataloader import get_dataloader_for_style_transfer
 from model import Encoder, Generator, Discriminator
-# from bert_pretrained import bert_tokenizer, get_bert_word_embedding, FILE_ID
-from bert_pretrained import get_bert_word_embedding, FILE_ID
+from bert_pretrained import bert_tokenizer, get_bert_word_embedding, FILE_ID
+# from bert_pretrained import get_bert_word_embedding, FILE_ID
 from bert_pretrained.classifier import BertClassifier
 from loss import loss_fn, gradient_penalty
 from evaluate import calculate_accuracy, calculate_frechet_distance
@@ -20,9 +20,9 @@ from transformers import AutoTokenizer, AutoModelWithLMHead
 
 # Base Model (108M)
 
-bert_tokenizer = AutoTokenizer.from_pretrained("beomi/kcbert-base")
+# bert_tokenizer = AutoTokenizer.from_pretrained("beomi/kcbert-base")
 
-model = AutoModelWithLMHead.from_pretrained("beomi/kcbert-base")
+# model = AutoModelWithLMHead.from_pretrained("beomi/kcbert-base")
 
 # # Large Model (334M)
 

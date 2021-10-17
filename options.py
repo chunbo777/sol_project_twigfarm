@@ -19,7 +19,7 @@ argparser.add_argument('--ckpt_path',
                        required=False,
                        help="./ckpoint",
                        type=str,
-                       default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/ckpoint/aihub2")
+                       default="/Users/seojiwon/sol_project_twigfarm/ckpoint")
 # argparser.add_argument('--clf_ckpt_path',
 #                        help="path to load pretrained classifier",
 #                        type=str,
@@ -216,10 +216,11 @@ elif args.dataset == 'nsmc':
     args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/nsmc_clf.pt'
 elif args.dataset == 'AIhub':
     args.language = 'ko'
-    args.text_file_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/data/AIhub_train.csv'
-    args.val_text_file_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/data/AIhub/AIhub_test.csv'
-    args.test_text_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/data/AIhub/AIhub_test.csv'
+    args.text_file_path = '/Users/seojiwon/data_bert/AIhub_train.csv'
+    args.val_text_file_path = '/Users/seojiwon/data_bert/AIhub_test.csv'
+    args.test_text_path = '/Users/seojiwon/data_bert/AIhub_test.csv'
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/aihub_clf.pt'
+    args.clf_ckpt_path =  "/Users/seojiwon/Downloads/AIhub.pt"
     args.clf_ckpt_path = None
 elif args.dataset is None:
     assert args.text_file_path is not None
