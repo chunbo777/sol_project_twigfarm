@@ -74,12 +74,13 @@ class Trainer:
         # pretrained classifier
         self.clf = BertClassifier()
         if args.clf_ckpt_path is not None:
-            download_google(FILE_ID, args.clf_ckpt_path)
+            # download_google(FILE_ID, args.clf_ckpt_path)
             ckpt = torch.load(
                 args.clf_ckpt_path,
                 map_location=lambda storage, loc: storage
             )
             self.clf.load_state_dict(ckpt['model_state_dict'])
+            # self.clf.load_state_dict(ckpt, strict = False)
         self.clf.to(args.device)
         self.clf.eval()
 
@@ -322,6 +323,7 @@ def main():
 
 
 if __name__ == '__main__':
+    from options import args
     # wandb.agent(sweep_id=sweep_id, function=main)
     sweep_id = get_sweep_id('grid')
     wandb.init(project = "nlp_style_transfer")
@@ -329,6 +331,7 @@ if __name__ == '__main__':
 
     
     # if args.mode == 'train':
+        
     #     wandb.init(project = "nlp_style_transfer")
     #     # sweep_id = get_sweep_id('grid')
     #     # wandb.agent(sweep_id=sweep_id) 
@@ -338,6 +341,7 @@ if __name__ == '__main__':
     #     loss_save = sys.maxsize
     #     for _ in range(args.epochs):
 
+    
     #         trainer.train_epoch()
     #         fed, loss, acc = trainer.evaluate()
     #         if loss < loss_save:
