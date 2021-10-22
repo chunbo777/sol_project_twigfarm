@@ -126,6 +126,10 @@ class Trainer:
             'loss_disc': AverageMeter('Loss Disc', ':.4e'),
             'time': AverageMeter('Time', ':6.3f')
         }
+        wandb.log({'loss_rec': AverageMeter('Loss Rec', ':.4e')})
+        wandb.log({'loss_adv': AverageMeter('Loss Adv', ':.4e')})
+        wandb.log({'loss_disc': AverageMeter('Loss Disc', ':.4e')})
+        
         # for key, value in avg_meters.items():
         #     wandb.log({key : value})
         progress_meter = ProgressMeter(
@@ -264,6 +268,8 @@ class Trainer:
         print("Evaluation from {} samples".format(args.n_samples))
         fed = (calculate_frechet_distance(inputs1, outputs0)
                + calculate_frechet_distance(inputs0, outputs1))
+        wandb.login({"FED": fed})
+        
         print('FED: {:.4f}'.format(fed))
 
         loss, acc = calculate_accuracy(
@@ -275,7 +281,9 @@ class Trainer:
             ]).long().to(args.device)
         )
         print('Loss: {:.4f}'.format(loss.item()))
+        wandb.login({"Loss":loss.item()})
         print('Accuracy: {:.4f}\n'.format(acc.item()))
+        wandb.login({"ACC":acc.item()})
         return fed, loss.item(), acc.item()
 
 
