@@ -48,8 +48,13 @@ class StyleTransfer(Dataset):
         #     print("end")
         # if data file = AIhub=>
         df = pd.read_csv(txt_path)
-        self.texts = list(df["document"])
-        self.labels =  list(df["label"])
+        for i in range(len(df["document"])):
+            if int(df["label"][i]) == label :
+                self.texts.append(df["document"][i])
+                self.labels.append(int(df["label"][i]))
+                
+        # self.texts = list(df["document"])
+        # self.labels =  list(df["label"])
         print("end")
 
 
