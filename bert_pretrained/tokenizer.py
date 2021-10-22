@@ -21,9 +21,9 @@ import unicodedata
 from shutil import copyfile
 from transformers import PreTrainedTokenizer, AutoTokenizer
 import sys
-from transformers.models.electra.tokenization_electra import ElectraTokenizer
+# from transformers.models.electra.tokenization_electra import ElectraTokenizer
 
-from transformers.utils.dummy_pt_objects import ElectraModel
+# from transformers.utils.dummy_pt_objects import ElectraModel
 sys.path.insert(0, "/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/")
 from options import args
 
