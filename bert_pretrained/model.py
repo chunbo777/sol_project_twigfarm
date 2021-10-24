@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from transformers import BertModel,AutoModelWithLMHead
-from transformers import BartModel
+from transformers import BartModel #clf 모델로 바트 추가
 from kobart import get_pytorch_kobart_model, get_kobart_tokenizer
 from bert_pretrained.tokenizer import bert_tokenizer
 from options import args
