@@ -5,51 +5,24 @@ from torch.nn import functional as F
 import time
 import itertools
 import sys, os
-
-# from transformers import BertModel , ElectraModel, ElectraTokenizer
-sys.path.insert(0, "/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/")
+from transformers import BertModel 
 from dataloader import get_dataloader_for_style_transfer
 from model import Encoder, Generator, Discriminator
 from bert_pretrained import bert_tokenizer, get_bert_word_embedding, FILE_ID
-# from bert_pretrained import get_bert_word_embedding, FILE_ID
-from bert_pretrained.classifier import BertClassifier
+from bert_pretrained.classifier import BertClassifier, BartClassifier
 from loss import loss_fn, gradient_penalty
 from evaluate import calculate_accuracy, calculate_frechet_distance
 from transfer import style_transfer
-from transformers import AutoTokenizer, AutoModelWithLMHead
+from utils import AverageMeter, ProgressMeter, Metric_Printer
 
-# Base Model (108M)
-
-# bert_tokenizer = AutoTokenizer.from_pretrained("beomi/kcbert-base")
-
-# model = AutoModelWithLMHead.from_pretrained("beomi/kcbert-base")
-
-# # Large Model (334M)
-
-# tokenizer = AutoTokenizer.from_pretrained("beomi/kcbert-large")
-
-# model = AutoModelWithLMHead.from_pretrained("beomi/kcbert-large")
-
-
-from utils import AverageMeter, ProgressMeter, download_google, Metric_Printer
-""" 
-wandb(weight and biases) 사용법
-wandb에 계정 생성 및 로그인 => 하이퍼 파라미터 튜닝을 위한 모듈 sweep를 사용할 것이기 때문에 
-sweepid를 통한 메인호출을 하기위해 get_sweep_id함수를 임포트(sweep.py) sweep_id를 통해 agent를 디파인
-옵션에 있는 여러 파라미터들을 wandb의 config를 인용한 파라미터로 변경   
-
-"""
-
-import wandb
+import wandb #options for logging
 wandb.login()
-#wandb를 선행 호출 후 options를 임포트해야 오류 발생안함
-
-from sweep import get_sweep_id
+wandb.init(project ="style_transfer_final")
+# from sweep import get_sweep_id
 
 class Trainer:
-    
+    from options import args
     def __init__(self):
-        from options import args
         # get models
         embedding = get_bert_word_embedding()
         if os.path.isfile(args.load_ckpt):
@@ -71,15 +44,16 @@ class Trainer:
             })
         self.models.to(args.device)
         # wandb.watch(models)
-        # pretrained classifier
+        # load pretrained classifier for evaluating, update
         self.clf = BertClassifier()
+        self.clf = BartClassifier()
         if args.clf_ckpt_path is not None:
-            # download_google(FILE_ID, args.clf_ckpt_path)
-            ckpt = torch.load(
-                args.clf_ckpt_path,
-                map_location=lambda storage, loc: storage
-            )
-            self.clf.load_state_dict(ckpt['model_state_dict'])
+            # ckpt = torch.load(
+            #     args.clf_ckpt_path,
+            #     map_location=lambda storage, loc: storage
+            # )
+            # self.clf.load_state_dict(ckpt['model_state_dict'])
+            self.clf.load_state_dict(torch.load(args.clf_ckpt_path))
             # self.clf.load_state_dict(ckpt, strict = False)
         self.clf.to(args.device)
         self.clf.eval()
@@ -126,12 +100,11 @@ class Trainer:
             'loss_disc': AverageMeter('Loss Disc', ':.4e'),
             'time': AverageMeter('Time', ':6.3f')
         }
-        wandb.log({'loss_rec': AverageMeter('Loss Rec', ':.4e')})
-        wandb.log({'loss_adv': AverageMeter('Loss Adv', ':.4e')})
-        wandb.log({'loss_disc': AverageMeter('Loss Disc', ':.4e')})
+        # wandb.log({'loss_rec': AverageMeter('Loss Rec', ':.4e')})
+        # wandb.log({'loss_adv': AverageMeter('Loss Adv', ':.4e')})
+        # wandb.log({'loss_disc': AverageMeter('Loss Disc', ':.4e')})
         
-        # for key, value in avg_meters.items():
-        #     wandb.log({key : value})
+
         progress_meter = ProgressMeter(
             len(self.train_loaders[0]),
             avg_meters.values(),
@@ -333,10 +306,10 @@ def main():
 if __name__ == '__main__':
     from options import args
     # wandb.agent(sweep_id=sweep_id, function=main)
-    sweep_id = get_sweep_id('grid')
-    wandb.init(project = "nlp_style_transfer")
-    wandb.agent(sweep_id=sweep_id, function=main) 
-
+    # sweep_id = get_sweep_id('grid')
+    # wandb.init(project = "nlp_style_transfer")
+    # wandb.agent(sweep_id=sweep_id, function=main) 
+    main()
     
     # if args.mode == 'train':
         
