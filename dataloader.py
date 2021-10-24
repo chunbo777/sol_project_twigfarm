@@ -38,20 +38,20 @@ class StyleTransfer(Dataset):
         self.maxlen = maxlen
         self.texts = []
         self.labels = []
-        # with open(txt_path) as fr:
-        #     fr.readline()  # header line
-        #     for line in fr:
-        #         line = line.strip().split('\t')  # expects tsv format
-        #         if int(line[2]) == label:
-        #             self.texts.append(line[1])
-        #             self.labels.append(int(line[2]))
-        #     print("end")
+        with open(txt_path) as fr:
+            fr.readline()  # header line
+            for line in fr:
+                line = line.strip().split('\t')  # expects tsv format
+                if int(line[2]) == label:
+                    self.texts.append(line[1])
+                    self.labels.append(int(line[2]))
+            print("end")
         # if data file = AIhub=>
-        df = pd.read_csv(txt_path)
-        for i in range(len(df["document"])):
-            if int(df["label"][i]) == label :
-                self.texts.append(df["document"][i])
-                self.labels.append(int(df["label"][i]))
+#         df = pd.read_csv(txt_path)
+#         for i in range(len(df["document"])):
+#             if int(df["label"][i]) == label :
+#                 self.texts.append(df["document"][i])
+#                 self.labels.append(int(df["label"][i]))
                 
         # self.texts = list(df["document"])
         # self.labels =  list(df["label"])
