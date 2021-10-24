@@ -9,4 +9,4 @@ elif args.dataset ==  "AIhub":
 elif args.dataset == 'yelp':
     FILE_ID = "1wRBbVtL4uAHjyblyxjX4qIAVi9T-IXe1"
 else:
-    raise NotImplementedError
+    FILE_ID = None
