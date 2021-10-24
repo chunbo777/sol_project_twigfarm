@@ -10,7 +10,7 @@ import torch.nn as nn
 from transformers import get_linear_schedule_with_warmup
 
 from dataloader import get_dataloader_for_classification
-from bert_pretrained.model import BERT
+from bert_pretrained.model import BERT, BART
 from utils import AverageMeter, ProgressMeter, save_model
 from options import args
 
@@ -24,6 +24,18 @@ class BertClassifier(nn.Module):
 
     def forward(self, **inputs):
         features = self.BERT(**inputs)[0][:, 0]  # output at [CLS]
+        logits = self.fc(self.dropout(features))
+        return logits
+
+class BartClassifier(nn.Module):
+    def __init__(self, num_class=2, dropout_rate=0.1):
+        super().__init__()
+        self.BART = deepcopy(BART)  # prevent overwriting
+        self.dropout = nn.Dropout(dropout_rate)
+        self.fc = nn.Linear(BART.config.hidden_size, num_class)
+
+    def forward(self, **inputs):
+        features = self.BART(**inputs)[0][:, 0]  # output at [CLS]
         logits = self.fc(self.dropout(features))
         return logits
 
