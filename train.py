@@ -45,16 +45,20 @@ class Trainer:
         self.models.to(args.device)
         # wandb.watch(models)
         # load pretrained classifier for evaluating, update
-        self.clf = BertClassifier()
-        self.clf = BartClassifier()
+        
+        
         if args.clf_ckpt_path is not None:
-            # ckpt = torch.load(
-            #     args.clf_ckpt_path,
-            #     map_location=lambda storage, loc: storage
-            # )
-            # self.clf.load_state_dict(ckpt['model_state_dict'])
-            self.clf.load_state_dict(torch.load(args.clf_ckpt_path))
-            # self.clf.load_state_dict(ckpt, strict = False)
+            self.clf = BertClassifier()
+            if args.clf_model == "bert":
+                ckpt = torch.load(
+                    args.clf_ckpt_path,
+                    map_location=lambda storage, loc: storage
+                )
+                self.clf.load_state_dict(ckpt['state_dict'], strict = False)
+            if args.clf_model == "bart":
+                self.clf = BartClassifier()
+                self.clf.load_state_dict(torch.load(args.clf_ckpt_path)["state_dict"], strict = False)
+                
         self.clf.to(args.device)
         self.clf.eval()
 
@@ -100,10 +104,7 @@ class Trainer:
             'loss_disc': AverageMeter('Loss Disc', ':.4e'),
             'time': AverageMeter('Time', ':6.3f')
         }
-        # wandb.log({'loss_rec': AverageMeter('Loss Rec', ':.4e')})
-        # wandb.log({'loss_adv': AverageMeter('Loss Adv', ':.4e')})
-        # wandb.log({'loss_disc': AverageMeter('Loss Disc', ':.4e')})
-        
+  
 
         progress_meter = ProgressMeter(
             len(self.train_loaders[0]),
