@@ -15,6 +15,10 @@ from evaluate import calculate_accuracy, calculate_frechet_distance
 from transfer import style_transfer
 from utils import AverageMeter, ProgressMeter, Metric_Printer
 
+GPU_NUM=1
+device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
+torch.cuda.set_device(device) # change allocation of current GPU
+print ('Current cuda device ', torch.cuda.current_device()) # check
 import wandb #options for logging
 wandb.login()
 wandb.init(project ="style_transfer_final")

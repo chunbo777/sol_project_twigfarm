@@ -2,7 +2,7 @@ from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 
-from bert_pretrained import extract_features, bert_tokenizer
+from bert_pretrained import extract_features, bert_tokenizer, bart_tokenizer 
 from utils import covariance, sqrtm
 
 
@@ -68,14 +68,23 @@ def calculate_frechet_distance(text1, text2, verbose=False):
 @torch.no_grad()
 def calculate_accuracy(clf, text, labels, verbose=False):
     outputs = []
-    for line in tqdm(text, disable=not verbose):
-        inputs = bert_tokenizer(
-            line.strip(),
-            add_special_tokens=True,
-            return_tensors='pt',
-            padding=True
-        ).to(labels.device)
-        outputs.append(clf(**inputs))
+    if args.clf_model == "bert":
+        for line in tqdm(text, disable=not verbose):
+            inputs = bert_tokenizer(
+                line.strip(),
+                add_special_tokens=True,
+                return_tensors='pt',
+                padding=True
+            ).to(labels.device)
+            outputs.append(clf(**inputs))
+    if args.clf_model == "bart":
+        for line in tqdm(text, disable=not verbose):
+            inputs = bart_tokenizer(
+                line.strip(),
+                add_special_tokens=True,
+                return_tensors='pt',
+                padding=True
+            ).to(labels.device)
     outputs = torch.cat(outputs, dim=0)
     loss = F.cross_entropy(outputs, labels)
     preds = torch.argmax(outputs, dim=1)
