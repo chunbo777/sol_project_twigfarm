@@ -21,10 +21,8 @@ import unicodedata
 from shutil import copyfile
 from transformers import PreTrainedTokenizer, AutoTokenizer
 import sys
-# from transformers.models.electra.tokenization_electra import ElectraTokenizer
-
-# from transformers.utils.dummy_pt_objects import ElectraModel
-sys.path.insert(0, "/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/")
+from kobart import get_kobart_tokenizer
+sys.path.insert(0, "/home/lab12/sol/sol_project_twigfarm/")
 from options import args
 
 
@@ -279,6 +277,7 @@ class KoBertTokenizer(PreTrainedTokenizer):
 # override alias for each language
 if args.language == 'ko':
     bert_tokenizer = KoBertTokenizer.from_pretrained('monologg/kobert')
+    bart_tokenizer = get_kobart_tokenizer()
     # bert_tokenizer=AutoTokenizer.from_pretrained("beomi/kcbert-base")
 # if args.language == "ko":
 #     bert_tokenizer=ElectraTokenizer.from_pretrained("monologg/koelectra-base-v3-discriminator")
@@ -289,3 +288,6 @@ special_tokens_to_add = {
     'eos_token': '[EOS]',
 }
 bert_tokenizer.add_special_tokens(special_tokens_to_add)
+
+
+# bart_tokenizer.add_special_tokens(special_tokens_to_add)
