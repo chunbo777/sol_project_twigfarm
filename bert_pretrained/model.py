@@ -3,7 +3,7 @@ import torch.nn as nn
 from transformers import BertModel,AutoModelWithLMHead
 from transformers import BartModel #clf 모델로 바트 추가
 from kobart import get_pytorch_kobart_model, get_kobart_tokenizer
-from bert_pretrained.tokenizer import bert_tokenizer
+from bert_pretrained.tokenizer import bert_tokenizer,  bart_tokenizer
 from options import args
 
 
@@ -39,12 +39,23 @@ def get_bert_word_embedding():
 
 @torch.no_grad()
 def extract_features(text):
-    inputs = bert_tokenizer(
-        text,
-        add_special_tokens=True,
-        return_tensors='pt',
-        padding=True
-    ).to(args.device)
-    features = BERT(**inputs)[0]
-    # sentence embedding = mean of word embedding
-    return features.squeeze(0).mean(0)
+    if args.clf_model == "bert":
+        inputs = bert_tokenizer(
+            text,
+            add_special_tokens=True,
+            return_tensors='pt',
+            padding=True
+        ).to(args.device)
+        features = BERT(**inputs)[0]
+        return features.squeeze(0).mean(0)
+    if args.clf_model == "bart":
+        inputs = bart_tokenizer(
+                [text]
+                # ,add_special_tokens=True
+                ,return_tensors='pt'
+                # , padding=True
+        ).to(args.device)
+        inputs = inputs["input_ids"]
+        features = BART(inputs)[0]
+        # sentence embedding = mean of word embedding
+        return features.squeeze(0).mean(0)
