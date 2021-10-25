@@ -13,7 +13,7 @@ class SentimentAnalysis(Dataset):
         with open(txt_path) as fr:
             fr.readline()  # header line
             for line in fr:
-                line = line.strip().split(',')  # expects tsv format
+                line = line.strip().split('\t')  # expects tsv format
                 self.texts.append(line[1])
                 self.labels.append(0)
                 self.texts.append(line[2])
@@ -40,11 +40,13 @@ class StyleTransfer(Dataset):
         self.labels = []
         with open(txt_path) as fr:
             fr.readline()  # header line
-            for line in fr:
+            for i, line in enumerate(fr):
                 line = line.strip().split('\t')  # expects tsv format
                 if int(line[2]) == label:
                     self.texts.append(line[1])
                     self.labels.append(int(line[2]))
+                if i == 10 :
+                    break 
             print("end")
         # if data file = AIhub=>
 #         df = pd.read_csv(txt_path)
