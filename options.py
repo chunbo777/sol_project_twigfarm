@@ -17,9 +17,14 @@ argparser = argparse.ArgumentParser(sys.argv[0])
 
 argparser.add_argument('--ckpt_path',
                        required=False,
-                       help="./ckpoint",
+                       help="./ckpoint1",
                        type=str,
-                       default="./ckpoint")
+                       default="./ckpoint1")
+# argparser.add_argument('--ckpt_path',
+#                        required=False,
+#                        help="./ckpoint",
+#                        type=str,
+#                        default="/Users/seojiwon/sol_project_twigfarm/ckpoint")
 # argparser.add_argument('--clf_ckpt_path',
 #                        help="path to load pretrained classifier",
 #                        type=str,
@@ -30,16 +35,19 @@ argparser.add_argument('--ckpt_path',
 #                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/AIhub_clf.pt")
 # # dataloading
 argparser.add_argument('--clf_ckpt_path',
-                       help="path to load pretrained classifier",
+                       help="path to load pretrained classifier, check your clf model",
                        type=str,
-#                        default="/home/tf-dev-02/workspace_sol/outputs/nsmc2.pt")
-#                        default="/home/tf-dev-02/workspace_sol/outputs/aihub2.pt")
-                       default="/home/tf-dev-02/workspace_sol/br.pt")
-#                        help="path to load pretrained classifier",
-#                        type=str,
+                    #    default="/home/lab12/sol/sol_project_twigfarm/data_bert/br.pt") #bert clf model
+                       default="/home/lab12/sol/sol_project_twigfarm/NSMC-last.ckpt") #bart clf model 
+#
 #                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/AIhub_clf.pt")
-# # dataloading")
 
+
+argparser.add_argument("--clf_model",
+                        help = "select clf model between bert and bart",
+                        type =  str, 
+                        choices = [ "bert", "bart"],
+                        default = "bart")
 argparser.add_argument('--dataset',
                        type=str,
                        choices=['yelp', 'nsmc', 'AIhub','br'],
@@ -226,11 +234,11 @@ elif args.dataset == 'AIhub':
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/nsmc_clf.pt'
 elif args.dataset == 'br':
     args.language = 'ko'
-    args.text_file_path = "/home/tf-dev-02/workspace_sol/style-transfer/others/sol_project_twigfarm/data_out_br/brunch_train.csv"
-    args.val_text_file_path = '/home/tf-dev-02/workspace_sol/style-transfer/others/sol_project_twigfarm/data_out_br/brunch_test.csv'
-    args.test_text_path = "/home/tf-dev-02/workspace_sol/style-transfer/others/sol_project_twigfarm/data_out_br/brunch_train.csv"
+    args.text_file_path = "/home/lab12/sol/sol_project_twigfarm/data_bert/train_data.txt"
+    args.val_text_file_path = '/home/lab12/sol/sol_project_twigfarm/data_bert/test_data.txt'
+    args.test_text_path = "/home/lab12/sol/sol_project_twigfarm/data_bert/val_data.txt"
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/aihub_clf.pt'
-    args.clf_ckpt_path =  "/home/tf-dev-02/workspace_sol/br.pt"
+    args.clf_ckpt_path = "/home/lab12/sol/sol_project_twigfarm/NSMC-last.ckpt"
 
 
 
