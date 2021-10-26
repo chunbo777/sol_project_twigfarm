@@ -69,11 +69,14 @@ def style_transfer(encoder=None, generator=None, text_path=None, n_samples=100):
                 if counter == 1:
                     continue
                 # if you use baseline model,
-                # _, text, label = line.strip().split('\t')
-                for i in range(0,2):
-                    text=line.strip().split(",")[i+1]
-                    label=i
-               
+                if len(line.strip().split('\t')) == 3:
+                    _, text, label = line.strip().split('\t')
+                # elif len(line.strip().split('\t')) == 2:
+                #     try :
+                #         text = line.strip().split('\t')[0].split(" ")[1]
+                #         label = line.strip().split('\t')[-1]
+                #     except: 
+                #         pass
                     tokens = bert_tokenizer.encode(text, add_special_tokens=False)
                     tokens = (
                         [bert_tokenizer.bos_token_id]
@@ -99,7 +102,9 @@ def style_transfer(encoder=None, generator=None, text_path=None, n_samples=100):
                         fw.write(label + ' > ' + str(1-int(label)) + ': '+ text + ' -> ' + output + '\n')
                     if counter > n_samples:
                         break
-
+            else :
+                    print(f"Error in sentence split in line {counter}")
+                    pass
         if fw is not None:
             fw.close()
         return inputs0, inputs1, outputs0, outputs1
@@ -137,8 +142,8 @@ def _transfer():
     ckpt = torch.load(args.ckpt_path, map_location=device)
     # embedding.load_state_dict(ckpt['embedding_state_dict'])
     embedding.load_state_dict(ckpt['embedding'])
-    encoder.load_state_dict(ckpt['encoder_state_dict'])
-    generator.load_state_dict(ckpt['generator_state_dict'])
+    encoder.load_state_dict(ckpt['encoder'])
+    generator.load_state_dict(ckpt['generator'])
     
     # 3. transfer!
     if args.transfer_result_save_path is not None:

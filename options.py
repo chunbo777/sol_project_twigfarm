@@ -17,9 +17,14 @@ argparser = argparse.ArgumentParser(sys.argv[0])
 
 argparser.add_argument('--ckpt_path',
                        required=False,
-                       help="./ckpoint",
+                       help="./ckpoint for pretraining(classifier) and style transfer training",
                        type=str,
-                       default="./ckpoint")
+                       default="/home/ubuntu/workspace_sol/sol_project_twigfarm/ckpoint_style_transfer_all.pt")
+# argparser.add_argument('--ckpt_path',
+#                        required=False,
+#                        help="./ckpoint",
+#                        type=str,
+#                        default="/Users/seojiwon/sol_project_twigfarm/ckpoint")
 # argparser.add_argument('--clf_ckpt_path',
 #                        help="path to load pretrained classifier",
 #                        type=str,
@@ -30,16 +35,20 @@ argparser.add_argument('--ckpt_path',
 #                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/AIhub_clf.pt")
 # # dataloading
 argparser.add_argument('--clf_ckpt_path',
-                       help="path to load pretrained classifier",
+                       help="path to load pretrained classifier, check your clf model",
                        type=str,
-#                        default="/home/tf-dev-02/workspace_sol/outputs/nsmc2.pt")
-#                        default="/home/tf-dev-02/workspace_sol/outputs/aihub2.pt")
-                       default="/home/tf-dev-02/workspace_sol/br.pt")
-#                        help="path to load pretrained classifier",
-#                        type=str,
+                        default = "/home/ubuntu/workspace_sol/ckpoint1.pt")
+                    #    default="/home/lab12/sol/sol_project_twigfarm/data_bert/br.pt") #bert clf model
+                    #    default="/home/lab12/sol/sol_project_twigfarm/NSMC-last.ckpt") #bart clf model 
+#
 #                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/AIhub_clf.pt")
-# # dataloading")
 
+
+argparser.add_argument("--clf_model",
+                        help = "select clf model between bert and bart",
+                        type =  str, 
+                        choices = [ "bert", "bart"],
+                        default = "bert")
 argparser.add_argument('--dataset',
                        type=str,
                        choices=['yelp', 'nsmc', 'AIhub','br'],
@@ -170,7 +179,7 @@ argparser.add_argument('--threshold',
 argparser.add_argument('--mode',
                         help='train or transfer',
                         choices=['train', 'transfer', 'interactive'],
-                        default='train',
+                        default='transfer',
                         type=str)
 argparser.add_argument('--test_text_path',
                        help='path to text file whose each line contains one sentence',
@@ -186,7 +195,7 @@ argparser.add_argument('--transfer_max_len',
                        default=64,
                        type=int)
 argparser.add_argument("--transfer_result_save_path",
-                       default=None,
+                       default="./save",
                        help="path to save transfer result")
 
 # others
@@ -226,11 +235,11 @@ elif args.dataset == 'AIhub':
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/nsmc_clf.pt'
 elif args.dataset == 'br':
     args.language = 'ko'
-    args.text_file_path = "/home/tf-dev-02/workspace_sol/style-transfer/others/sol_project_twigfarm/data_out_br/brunch_train.csv"
-    args.val_text_file_path = '/home/tf-dev-02/workspace_sol/style-transfer/others/sol_project_twigfarm/data_out_br/brunch_test.csv'
-    args.test_text_path = "/home/tf-dev-02/workspace_sol/style-transfer/others/sol_project_twigfarm/data_out_br/brunch_train.csv"
+    args.text_file_path = "/home/ubuntu/workspace_sol/style-transfer/NLP_text-style-transfer_copy/data/branch/200_train_data.txt"
+    args.val_text_file_path = "/home/ubuntu/workspace_sol/style-transfer/NLP_text-style-transfer_copy/data/branch/200_val_data.txt"
+    args.test_text_path = "/home/ubuntu/workspace_sol/style-transfer/NLP_text-style-transfer_copy/data/branch/200_test_data.txt"
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/aihub_clf.pt'
-    args.clf_ckpt_path =  "/home/tf-dev-02/workspace_sol/br.pt"
+    args.clf_ckpt_path = "/home/ubuntu/workspace_sol/ckpoint1.pt"
 
 
 
