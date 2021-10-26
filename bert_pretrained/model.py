@@ -17,7 +17,8 @@ BERT = BertModel.from_pretrained(model_type).to(args.device)
 # if args.language == 'ko':
 #     model_type = "monologg/koelectra-base-v3-discriminator"
 # BERT = ElectraModel.from_pretrained(model_type).to(args.device)
-BART = BartModel.from_pretrained(get_pytorch_kobart_model())
+if args.clf_model == "bart":
+    BART = BartModel.from_pretrained(get_pytorch_kobart_model())
 
 
 def get_bert_word_embedding():

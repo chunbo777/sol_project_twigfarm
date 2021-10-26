@@ -12,11 +12,14 @@ class SentimentAnalysis(Dataset):
         self.labels = []
         with open(txt_path) as fr:
             fr.readline()  # header line
-            for line in fr:
-                line = line.strip().split('\t')  # expects tsv format
-                self.texts.append(line[1])
-                self.labels.append(0)
-                self.texts.append(line[2])
+            for i, line in enumerate(fr):
+                try : 
+                    line = line.strip().split('\t')  # expects tsv format
+                    self.texts.append(line[1])
+                    self.labels.append(0)
+                    self.texts.append(line[2])
+                except :
+                    pass
                 self.labels.append(1)
     def __len__(self):
         return len(self.texts)
@@ -38,16 +41,27 @@ class StyleTransfer(Dataset):
         self.maxlen = maxlen
         self.texts = []
         self.labels = []
+
         with open(txt_path) as fr:
-            fr.readline()  # header line
+            already_list = []
+            fr.readline()
             for i, line in enumerate(fr):
-                line = line.strip().split('\t')  # expects tsv format
-                if int(line[2]) == label:
-                    self.texts.append(line[1])
-                    self.labels.append(int(line[2]))
-                if i == 10 :
-                    break 
+                line = line.strip().split('\t')
+                if len(line) == 3: #split 오류 걸러내기
+                    if line[1] not in already_list:
+                        already_list.append(line[1])
+                        if int(line[2]) == label:
+                            self.texts.append(line[1])
+                            self.labels.append(int(line[2]))
+                #     if int(line[2]) == label:
+                #         self.texts.append(line[1])
+                #         self.labels.append(int(line[2]))
+                # if i == 90000 :
+                #     break
+
             print("end")
+
+
         # if data file = AIhub=>
 #         df = pd.read_csv(txt_path)
 #         for i in range(len(df["document"])):
@@ -57,7 +71,7 @@ class StyleTransfer(Dataset):
                 
         # self.texts = list(df["document"])
         # self.labels =  list(df["label"])
-        print("end")
+        # print("end")
 
 
 

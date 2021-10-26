@@ -9,14 +9,21 @@ from transformers import BertModel
 from dataloader import get_dataloader_for_style_transfer
 from model import Encoder, Generator, Discriminator
 from bert_pretrained import bert_tokenizer, get_bert_word_embedding, FILE_ID
-from bert_pretrained.classifier import BertClassifier, BartClassifier
+from bert_pretrained.classifier import BertClassifier
+# from bert_pretrained.classifier import BartClassifier 
+# 바트 
 from loss import loss_fn, gradient_penalty
 from evaluate import calculate_accuracy, calculate_frechet_distance
 from transfer import style_transfer
 from utils import AverageMeter, ProgressMeter, Metric_Printer
 
+
+GPU_NUM=1
+device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
+torch.cuda.set_device(device) # change allocation of current GPU
+print ('Current cuda device ', torch.cuda.current_device()) # check
 import wandb #options for logging
-wandb.login()
+wandb.login(key='b566a76e22a2d5e92c85f72089410bfd98f78fce', relogin=True)
 wandb.init(project ="style_transfer_final")
 # from sweep import get_sweep_id
 
@@ -54,7 +61,7 @@ class Trainer:
                     args.clf_ckpt_path,
                     map_location=lambda storage, loc: storage
                 )
-                self.clf.load_state_dict(ckpt['state_dict'], strict = False)
+                self.clf.load_state_dict(ckpt['model_state_dict'], strict = False)
             if args.clf_model == "bart":
                 self.clf = BartClassifier()
                 self.clf.load_state_dict(torch.load(args.clf_ckpt_path)["state_dict"], strict = False)
@@ -242,7 +249,7 @@ class Trainer:
         print("Evaluation from {} samples".format(args.n_samples))
         fed = (calculate_frechet_distance(inputs1, outputs0)
                + calculate_frechet_distance(inputs0, outputs1))
-        wandb.login({"FED": fed})
+        wandb.log({"FED": fed})
         
         print('FED: {:.4f}'.format(fed))
 
@@ -255,9 +262,9 @@ class Trainer:
             ]).long().to(args.device)
         )
         print('Loss: {:.4f}'.format(loss.item()))
-        wandb.login({"Loss":loss.item()})
+        wandb.log({"Loss":loss.item()})
         print('Accuracy: {:.4f}\n'.format(acc.item()))
-        wandb.login({"ACC":acc.item()})
+        wandb.log({"ACC":acc.item()})
         return fed, loss.item(), acc.item()
 
 
@@ -294,7 +301,8 @@ def main():
         if loss < loss_save:
             loss_save = loss
             print ("saving model : " + args.ckpt_path)
-            torch.save(trainer.models, args.ckpt_path)
+            # torch.save(trainer.models, args.ckpt_path)
+            torch.save(trainer.models.state_dict(), args.ckpt_path)
 
         printer.update(fed, loss, acc)
     print(printer)
