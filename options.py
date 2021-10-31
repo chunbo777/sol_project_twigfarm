@@ -4,50 +4,32 @@ import pprint
 import torch
 from torch.nn.functional import threshold
 from utils import str2bool
-import wandb
-from sweep import get_sweep_id
-# sweep_id = get_sweep_id('grid')
-# wandb.agent(sweep_id=sweep_id)
+#wandb 설정 (옵션)
+# import wandb
+# from sweep import get_sweep_id
 
-
-# config = wandb.config
-# config.learning_rate = 0.01
 
 argparser = argparse.ArgumentParser(sys.argv[0])
 
 argparser.add_argument('--ckpt_path',
-                       required=False,
-                       help="./ckpoint1",
+                       required=True,
+                       help="./ckpoint for pretraining(classifier) and style transfer training",
                        type=str,
-                       default="./ckpoint1")
-# argparser.add_argument('--ckpt_path',
-#                        required=False,
-#                        help="./ckpoint",
-#                        type=str,
-#                        default="/Users/seojiwon/sol_project_twigfarm/ckpoint")
-# argparser.add_argument('--clf_ckpt_path',
-#                        help="path to load pretrained classifier",
-#                        type=str,
-#                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/bert_pretrained")
-# argparser.add_argument('--clf_ckpt_path',
-#                        help="path to load pretrained classifier",
-#                        type=str,
-#                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/AIhub_clf.pt")
+                       default="/home/ubuntu/workspace_sol/sol_project_twigfarm/ckpoint_style_transfer_all.pt")
+
 # # dataloading
 argparser.add_argument('--clf_ckpt_path',
                        help="path to load pretrained classifier, check your clf model",
+                       required=True,
                        type=str,
-                    #    default="/home/lab12/sol/sol_project_twigfarm/data_bert/br.pt") #bert clf model
-                       default="/home/lab12/sol/sol_project_twigfarm/NSMC-last.ckpt") #bart clf model 
-#
-#                        default="/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/AIhub_clf.pt")
-
+                        default = "/home/ubuntu/workspace_sol/ckpoint1.pt")
+         
 
 argparser.add_argument("--clf_model",
                         help = "select clf model between bert and bart",
                         type =  str, 
                         choices = [ "bert", "bart"],
-                        default = "bart")
+                        default = "bert")
 argparser.add_argument('--dataset',
                        type=str,
                        choices=['yelp', 'nsmc', 'AIhub','br'],
@@ -60,6 +42,7 @@ argparser.add_argument('--batch_size',
                        type=int,
                        default=64)
 
+#아래 주석 wandb 설정 -> 옵션
 # argparser.add_argument('--batch_size',
 #                        type=int,
 #                        default=wandb.config.batch_size if "batch_size" in wandb.config.keys() and isinstance(wandb.config.batch_size, int) else 64)
@@ -97,7 +80,7 @@ argparser.add_argument('--filter_sizes',
                        type=int,
                        nargs='+',
                        default=[1, 2, 3, 4, 5])
-argparser.add_argument('--n_filters',
+argparser.add_argument('--n_filters',z
                        type=int,
                        default=128)
 
@@ -194,7 +177,7 @@ argparser.add_argument('--transfer_max_len',
                        default=64,
                        type=int)
 argparser.add_argument("--transfer_result_save_path",
-                       default=None,
+                       default="./save",
                        help="path to save transfer result")
 
 # others
@@ -234,11 +217,11 @@ elif args.dataset == 'AIhub':
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/nsmc_clf.pt'
 elif args.dataset == 'br':
     args.language = 'ko'
-    args.text_file_path = "/home/lab12/sol/sol_project_twigfarm/data_bert/train_data.txt"
-    args.val_text_file_path = '/home/lab12/sol/sol_project_twigfarm/data_bert/test_data.txt'
-    args.test_text_path = "/home/lab12/sol/sol_project_twigfarm/data_bert/val_data.txt"
+    args.text_file_path = "/home/ubuntu/workspace_sol/style-transfer/NLP_text-style-transfer_copy/data/branch/200_train_data.txt"
+    args.val_text_file_path = "/home/ubuntu/workspace_sol/style-transfer/NLP_text-style-transfer_copy/data/branch/200_val_data.txt"
+    args.test_text_path = "/home/ubuntu/workspace_sol/style-transfer/NLP_text-style-transfer_copy/data/branch/200_test_data.txt"
     # args.clf_ckpt_path = '/home/tf-dev-01/workspace_sol/style-transfer/NLP_text-style-transfer_jw/aihub_clf.pt'
-    args.clf_ckpt_path = "/home/lab12/sol/sol_project_twigfarm/NSMC-last.ckpt"
+    args.clf_ckpt_path = "/home/ubuntu/workspace_sol/ckpoint1.pt"
 
 
 
