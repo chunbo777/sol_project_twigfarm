@@ -10,10 +10,18 @@ import torch.nn as nn
 from transformers import get_linear_schedule_with_warmup
 
 from dataloader import get_dataloader_for_classification
-from bert_pretrained.model import BERT, BART
+from bert_pretrained.model import BERT
 from utils import AverageMeter, ProgressMeter, save_model
 from options import args
-
+if args.clf_model == "bart":
+    from bert_pretrained.model import BART
+# import wandb
+# wandb.login()
+# wandb.init(project = "classifier")
+GPU_NUM=1
+device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
+torch.cuda.set_device(device) # change allocation of current GPU
+print ('Current cuda device ', torch.cuda.current_device()) # check
 
 class BertClassifier(nn.Module):
     def __init__(self, num_class=2, dropout_rate=0.1):
@@ -81,6 +89,7 @@ class BertClassifierTrainer:
 
     def train_epoch(self):
         self.model.train()
+        # wandb.watch(self.model)
         self.epoch += 1
 
         # record training statistics
@@ -125,9 +134,11 @@ class BertClassifierTrainer:
             # log progress
             if (ix + 1) % args.log_interval == 0:
                 progress_meter.display(ix + 1)
-
+                # wandb.log({"loss" :avg_meters['loss'].avg})
+                # wandb.log({"acc" : avg_meters['acc'].avg})
+        
         progress_meter.display(len(self.train_loader))
-
+        
     def evaluate(self):
         self.model.eval()
 
